@@ -1,1 +1,250 @@
-test
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="description" content="monkeSearch: An open-source, offline-first semantic search tool for your local files. Find documents using natural language and time-based queries.">
+  <meta property="og:title" content="monkeSearch: Local Semantic Search"/>
+  <meta property="og:description" content="An open-source, offline-first tool for searching local files using natural language. Understands time-based queries and works entirely on your machine."/>
+  <meta property="og:url" content="https://github.com/monkesearch/monkeSearch"/>
+  
+  <!-- <meta property="og:image" content="static/images/monkesearch_banner.png" />
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="630"/> -->
+
+
+  <meta name="twitter:title" content="monkeSearch: Local Semantic Search">
+  <meta name="twitter:description" content="An open-source, offline-first tool for searching local files using natural language. Understands time-based queries and works entirely on your machine.">
+  
+  <!-- <meta name="twitter:image" content="static/images/monkesearch_banner.png">
+  <meta name="twitter:card" content="summary_large_image"> -->
+
+  <meta name="keywords" content="Semantic Search, Local Search, Offline Search, Vector Database, Embeddings, Natural Language Processing, ChromaDB, LEANN, Cross-Platform">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+  <title>monkeSearch</title>
+  <link rel="icon" type="image/x-icon" href="static/images/favicon.png">
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+  rel="stylesheet">
+
+  <link rel="stylesheet" href="static/css/bulma.min.css">
+  <link rel="stylesheet" href="static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="static/css/index.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://documentcloud.adobe.com/view-sdk/main.js"></script>
+  <script defer src="static/js/fontawesome.all.min.js"></script>
+  <script src="static/js/bulma-carousel.min.js"></script>
+  <script src="static/js/bulma-slider.min.js"></script>
+  <script src="static/js/index.js"></script>
+</head>
+<body>
+
+
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-1 publication-title">monkeSearch</h1>
+            <h2 class="subtitle is-3 publication-authors">Offline-First Semantic Search for Your Local Files</h2>
+            
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">
+                <a href="https://abinesh-mathivanan.vercel.app/en" target="_blank">Abinesh Mathivanan</a>,
+              </span>
+              <span class="author-block">
+                <a href="https://github.com/Kishlay-notabot" target="_blank">Kishlay Kisu</a>,
+              </span>
+              <span class="author-block">
+                <a href="https://github.com/simplycode07" target="_blank">Dhruv Dubey</a>
+              </span>
+            </div>
+
+            <div class="column has-text-centered">
+              <div class="publication-links">
+                
+        
+                <span class="link-block">
+                  <a href="https://github.com/monkesearch/monkeSearch" target="_blank"
+                  class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                    <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                </a>
+              </span>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+<section class="section" style="padding-top: 1rem; padding-bottom: 3rem;">
+  <div class="container is-max-desktop ">
+    <div class="columns is-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3 has-text-centered">Abstract</h2>
+        <div class="content has-text-justified" style="margin: 0 auto; width: 100%; text-align: justify;">
+          <p>
+            <strong>monkeSearch</strong> is an open-source, offline-first desktop search tool that allows you to find local 
+            files using natural language. Instead of relying on simple keyword matching, it uses embedding models to 
+            understand the <i>semantic meaning</i> of your query, allowing you to search for concepts, not just words. 
+            We made it Temporal Aware, such that can parse time-related queries like "documents from last week" and 
+            apply them as filters. The entire process, from indexing to searching, runs locally on your machine. Our project utilizes different backends optimized for each OS to deliver the best performance 
+            and user experience across platforms. 
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<section class="section hero" style="padding-top: 3rem; padding-bottom: 3rem;">
+  <div class="container is-fluid">
+    <h2 class="title is-3 has-text-centered">Cross-Platform Architecture</h2>
+    <div id="results-carousel" class="carousel results-carousel">
+      
+      <div class="item">
+        <img src="static/images/macos.svg" alt="macOS architecture diagram">
+        <h2 class="subtitle has-text-centered">
+          <strong>macOS:</strong> Uses the native Spotlight indexer for fast file discovery and a highly-optimized LEANN vector database for search.
+        </h2>
+      </div>
+
+      <div class="item">
+        <img src="static/images/windows.svg" alt="Windows architecture diagram">
+        <h2 class="subtitle has-text-centered">
+          <strong>Windows:</strong> Uses a standard <code>os.walk</code> file system crawl and ChromaDB for vector storage and retrieval.
+        </h2>
+      </div>
+
+      <div class="item">
+        <img src="static/images/linux.svg" alt="Linux architecture diagram">
+        <h2 class="subtitle has-text-centered">
+          <strong>Linux:</strong> Architecture similar to MacOS. Benchmarks coming soon!
+        </h2>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<style>
+  #results-carousel .item img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 70%;
+    height: auto;
+  }
+  @media (max-width: 768px) {
+    #results-carousel .item img {
+      width: 95%;
+    }
+  }
+</style>
+
+
+<style>
+  #results-carousel .item img {
+    width: 70%;
+    height: auto;
+    display: block;
+  }
+</style>
+
+
+<section class="section hero" style="background-color: #f9f9f9;">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">Performance: macOS vs. Windows</h2>
+    
+
+    <div class="columns is-centered">
+      <div class="column is-three-quarters">
+        <img src="static/images/query_mac_windows.png" alt="Query Time Comparison Chart">
+        <p class="has-text-centered"><b>Query Time:</b> macOS demonstrates significantly faster average search times due to its LEANN backend.</p>
+      </div>
+    </div>
+    
+    <div class="columns is-centered">
+      <div class="column is-half">
+        <img src="static/images/index_mac_windows.png" alt="Index Size Comparison Chart">
+        <p class="has-text-centered"><b>Index Size:</b> On-disk size of the embedding database for different numbers of files.</p>
+      </div>
+      <div class="column is-half">
+        <img src="static/images/index_build_mac_windows.png" alt="Indexing Speed Comparison Chart">
+        <p class="has-text-centered"><b>Indexing Speed:</b> How many files per second each system can process during the initial build.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section hero">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">macOS Deep Dive: The Recompute Trade-Off</h2>
+    
+
+    <div class="columns is-centered">
+      <div class="column is-half">
+        <img src="static/images/compute_search_time.png" alt="Query Time with Recompute Chart">
+        <p class="has-text-centered"><b>Search Speed:</b> Disabling recompute yields lightning-fast searches (milliseconds), while enabling it dramatically slows down queries (seconds).</p>
+      </div>
+      <div class="column is-half">
+        <img src="static/images/compute_index_size.png" alt="Index Size with Recompute Chart">
+        <p class="has-text-centered"><b>Space Savings:</b> Enabling recompute creates a tiny index (over 90% smaller), saving significant disk space.</p>
+      </div>
+    </div>
+
+    <div class="columns is-centered">
+      <div class="column is-three-quarters">
+        <img src="static/images/compute_index_speed.png" alt="Indexing Speed with Recompute Chart">
+        <p class="has-text-centered"><b>Build Speed:</b> The initial indexing speed is nearly identical, as the main workload (embedding generation) is the same in both modes.</p>
+      </div>
+    </div>
+
+     <div class="content has-text-justified">
+      <p class="has-text-centered is-size-5" style="margin-top: 1rem;">
+        The "Recompute" feature on macOS offers a clear trade-off: enable it to save a massive amount of disk space at the cost of much slower search performance. Disable it for instant results, but with a larger storage footprint.
+      </p>
+    </div>
+  </div>
+</section>
+
+  <section class="section" id="Citation">
+    <div class="container is-max-desktop content">
+      <h2 class="title">Support the Project</h2>
+      <p>monkeSearch is an open source project. If you find it useful, please consider starring our repository on GitHub to show your support!</p>
+      <pre><code><a href="https://github.com/monkesearch/monkeSearch" target="_blank">https://github.com/monkesearch/monkeSearch</a></code></pre>
+    </div>
+</section>
+
+
+
+  <footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This page was built using the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank">Academic Project Page Template</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
