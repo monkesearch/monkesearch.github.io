@@ -8,23 +8,23 @@
   <meta property="og:description" content="An open-source, offline-first tool for searching local files using natural language. Understands time-based queries and works entirely on your machine."/>
   <meta property="og:url" content="https://github.com/monkesearch/monkeSearch"/>
   
-  <!-- <meta property="og:image" content="static/images/monkesearch_banner.png" />
+  <meta property="og:image" content="static/images/monkesearch_banner.png" />
   <meta property="og:image:width" content="1200"/>
-  <meta property="og:image:height" content="630"/> -->
+  <meta property="og:image:height" content="630"/>
 
 
   <meta name="twitter:title" content="monkeSearch: Local Semantic Search">
   <meta name="twitter:description" content="An open-source, offline-first tool for searching local files using natural language. Understands time-based queries and works entirely on your machine.">
   
-  <!-- <meta name="twitter:image" content="static/images/monkesearch_banner.png">
-  <meta name="twitter:card" content="summary_large_image"> -->
+  <meta name="twitter:image" content="static/images/monkesearch_banner.png">
+  <meta name="twitter:card" content="summary_large_image">
 
   <meta name="keywords" content="Semantic Search, Local Search, Offline Search, Vector Database, Embeddings, Natural Language Processing, ChromaDB, LEANN, Cross-Platform">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
 
   <title>monkeSearch</title>
-  <link rel="icon" type="image/x-icon" href="static/images/favicon.png">
+  <link rel="icon" type="image/x-icon" href="static/images/favicon.jpeg">
   <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
   rel="stylesheet">
 
@@ -99,10 +99,38 @@
             <strong>monkeSearch</strong> is an open-source, offline-first desktop search tool that allows you to find local 
             files using natural language. Instead of relying on simple keyword matching, it uses embedding models to 
             understand the <i>semantic meaning</i> of your query, allowing you to search for concepts, not just words. 
-            We made it Temporal Aware, such that can parse time-related queries like "documents from last week" and 
+            We made it Temporal Aware, such that it can parse time-related queries like "documents from last week" and 
             apply them as filters. The entire process, from indexing to searching, runs locally on your machine. Our project utilizes different backends optimized for each OS to deliver the best performance 
-            and user experience across platforms. 
+            and user experience across platforms.
           </p>
+          <br/>
+          <p>
+            <strong>Implementation Versions:</strong> There are multiple implementations in different branches written to achieve the same task for testing purposes. Rigorous evaluations and testing will be done before finalizing a single one for the main release.
+          </p>
+          <br/>
+          <p>
+            <strong>For Agentic Use:</strong> The legacy LLM-based implementations (branches below) are particularly suitable for integration into larger AI pipelines and agentic systems. These versions allow direct filesystem access through natural language without modifying any files, leveraging OS-level scoped safety through Spotlight. If you're building autonomous agents or LLM orchestration systems that need file discovery capabilities, these branches provide a direct LLM-to-filesystem bridge without the overhead of maintaining a separate index.
+          </p>
+          <ul>
+            <li>
+              <a href="https://github.com/monkesearch/monkeSearch/tree/feature/llama-cpp-support">
+                Initial implementation using LangExtract (Legacy – LLM based, ideal for agentic pipelines)
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/monkesearch/monkeSearch">
+                Current main branch: LEANN-based (except Windows: Windows uses ChromaDB) semantic search with temporal awareness via regex parsing
+              </a>
+            </li>
+            <li>
+              <code>llama.cpp</code> rewrite (legacy-main-llm-implementation) – deprecated but useful for direct LLM integration
+            </li>
+            <li>
+              <a href="https://github.com/monkesearch/monkeSearch/tree/feature/chunking">
+                <code>llama.cpp</code> feature branch – another variation of the <code>llama.cpp</code> rewrite, with a detailed response model
+              </a>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
