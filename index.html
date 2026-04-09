@@ -12,16 +12,14 @@
   <meta property="og:image:width" content="1200"/>
   <meta property="og:image:height" content="630"/>
 
-
   <meta name="twitter:title" content="monkeSearch: Local Semantic Search">
   <meta name="twitter:description" content="An open-source, offline-first tool for searching local files using natural language. Understands time-based queries and works entirely on your machine.">
   
   <meta name="twitter:image" content="static/images/monkesearch_banner.png">
   <meta name="twitter:card" content="summary_large_image">
 
-  <meta name="keywords" content="Semantic Search, Local Search, Offline Search, Vector Database, Embeddings, Natural Language Processing, ChromaDB, LEANN, Cross-Platform">
+  <meta name="keywords" content="Semantic Search, Local Search, Offline Search, Vector Database, Embeddings, Natural Language Processing, ChromaDB, LEANN, Cross-Platform, LLM, Spotlight, llama.cpp">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
 
   <title>monkeSearch</title>
   <link rel="icon" type="image/x-icon" href="static/images/favicon.jpeg">
@@ -68,8 +66,6 @@
 
             <div class="column has-text-centered">
               <div class="publication-links">
-                
-        
                 <span class="link-block">
                   <a href="https://github.com/monkesearch/monkeSearch" target="_blank"
                   class="external-link button is-normal is-rounded is-dark">
@@ -79,7 +75,6 @@
                   <span>Code</span>
                 </a>
               </span>
-
             </div>
           </div>
         </div>
@@ -90,44 +85,106 @@
 
 
 <section class="section" style="padding-top: 1rem; padding-bottom: 3rem;">
-  <div class="container is-max-desktop ">
+  <div class="container is-max-desktop">
     <div class="columns is-centered">
       <div class="column is-four-fifths">
         <h2 class="title is-3 has-text-centered">Abstract</h2>
         <div class="content has-text-justified" style="margin: 0 auto; width: 100%; text-align: justify;">
-          <p>
-            <strong>monkeSearch</strong> is an open-source, offline-first desktop search tool that allows you to find local 
-            files using natural language. Instead of relying on simple keyword matching, it uses embedding models to 
-            understand the <i>semantic meaning</i> of your query, allowing you to search for concepts, not just words. 
-            We made it Temporal Aware, such that it can parse time-related queries like "documents from last week" and 
-            apply them as filters. The entire process, from indexing to searching, runs locally on your machine. Our project utilizes different backends optimized for each OS to deliver the best performance 
-            and user experience across platforms.
+          <p style="margin-bottom: 1.25rem;">
+            <strong>monkeSearch</strong> is an open-source, offline-first desktop search tool that lets you find local 
+            files using natural language. Instead of relying on exact filenames, regex, or folder browsing, you just describe what 
+            you're looking for and when — the system finds it. Nothing leaves your machine.
           </p>
-          <br/>
-          <p>
-            <strong>Implementation Versions:</strong> There are multiple implementations in different branches written to achieve the same task for testing purposes. Rigorous evaluations and testing will be done before finalizing a single one for the main release.
+          <p style="margin-bottom: 1.25rem;">
+            Any natural language file search query can be broken down into three constituents:
+            <strong>file type</strong> (what kind of file — pdf, image, code, etc.),
+            <strong>temporal context</strong> (when — 3 days ago, last week, etc.), and
+            <strong>misc keywords</strong> (remaining context — project name, topic, etc.).
+            The first implementation used a local LLM to extract these constituents and convert them directly into macOS Spotlight 
+            query arguments. The current <code>main</code> branch achieves the same task using vector databases instead, making monkeSearch 
+            cross-platform. Both approaches are fully offline.
           </p>
-          <br/>
-          <p>
-            <strong>For Agentic Use:</strong> The legacy LLM-based implementations (branches below) are particularly suitable for integration into larger AI pipelines and agentic systems. These versions allow direct filesystem access through natural language without modifying any files, leveraging OS-level scoped safety through Spotlight. If you're building autonomous agents or LLM orchestration systems that need file discovery capabilities, these branches provide a direct LLM-to-filesystem bridge without the overhead of maintaining a separate index.
+
+          <h4 class="title is-5" style="margin-top: 2rem; margin-bottom: 1rem;">The First Implementation: LLM → Spotlight</h4>
+          <p style="margin-bottom: 1.25rem;">
+            The original vision behind the project: use a local LLM to convert a natural language query directly into arguments 
+            for macOS's built-in Spotlight search — no vector database, no embeddings index, no metadata dump. Just natural 
+            language in, structured OS-level query out, instant results back.
+          </p>
+          <p style="margin-bottom: 1.25rem;">
+            A user writes a query like <code>"python scripts from 3 days ago"</code>. Stop words are stripped, then a local LLM 
+            (Qwen3-0.6B running via llama.cpp) parses the cleaned query and extracts structured components using constrained JSON output:
+          </p>
+          <pre style="margin-top: 1rem; margin-bottom: 1.5rem;"><code>{
+  "file_types": ["py"],
+  "time_unit": "days",
+  "time_unit_value": "3",
+  "is_specific": true,
+  "source_text": {
+    "file_types": "python scripts",
+    "time_unit": "3 days ago"
+  }
+}</code></pre>
+          <p style="margin-bottom: 1.25rem;">
+            The LLM understands that "python scripts" → <code>.py</code>, "images" → <code>jpg,png</code>, 
+            "yesterday" → <code>days,1</code>, "last week" → <code>weeks,1</code>, etc. These extracted components are then 
+            converted into <code>NSMetadataQuery</code> predicates — the same API that powers Spotlight and <code>mdfind</code>. 
+            File types are mapped to UTIs via <code>utitools</code> and used as <code>kMDItemContentTypeTree</code> predicates; 
+            temporal data becomes <code>kMDItemFSContentChangeDate</code> date predicates; remaining keywords match against 
+            <code>kMDItemTextContent</code> and <code>kMDItemFSName</code>. All predicates are combined with 
+            <code>NSCompoundPredicate</code> and the compound query runs against Spotlight's existing index — results come 
+            back instantly since macOS already maintains the index. There's no index to build, no embeddings to generate. 
+            The LLM is the only "intelligence" layer, and the approach is <strong>safe by design</strong> (read-only, scoped 
+            through Spotlight's own access controls).
+          </p>
+          <p style="margin-bottom: 1.25rem;">
+            Two LLM-based branches exist: the 
+            <a href="https://github.com/monkesearch/monkeSearch/tree/langextract-llama-server">LangExtract implementation</a> 
+            using <a href="https://github.com/langextract/langextract">LangExtract</a> with a local Llama server for structured extraction, 
+            and the <strong>llama.cpp direct implementation</strong> (<code>legacy-main-llm-implementation</code> branch) using 
+            <code>llama_cpp.Llama</code> directly with constrained JSON output via Pydantic schema. Both use the same 
+            <code>parser.py</code> to convert structured output into <code>NSMetadataQuery</code> predicates.
+          </p>
+
+          <h4 class="title is-5" style="margin-top: 2.5rem; margin-bottom: 1rem;">Current Implementation: Vector DB</h4>
+          <p style="margin-bottom: 1.25rem;">
+            The current <code>main</code> branch achieves the same functionality using vector databases instead of a live LLM 
+            at query time. This was built to make monkeSearch cross-platform (the LLM → Spotlight approach is macOS-only) and 
+            to make search faster since it doesn't need an LLM running. The tradeoff: you need to build and maintain an index, 
+            but search is sub-second. Platform-specific metadata extraction feeds into embedding generation 
+            (default: <code>facebook/contriever</code>), with Mac/Linux using LEANN (graph-based vector index with 97% storage savings) 
+            and Windows using ChromaDB. Temporal expressions are parsed via regex into ISO timestamp ranges and applied as filters 
+            on the semantic search results.
+          </p>
+
+          <p style="margin-top: 2rem; margin-bottom: 1.25rem;">
+            <strong>For Agentic Use:</strong> The LLM-based implementations are particularly suitable for integration into 
+            larger AI pipelines and agentic systems. They provide a direct LLM-to-filesystem bridge through natural language 
+            without modifying any files, leveraging OS-level scoped safety through Spotlight. If you're building autonomous 
+            agents or LLM orchestration systems that need file discovery capabilities, these branches give you that without 
+            the overhead of maintaining a separate index.
+          </p>
+          <p style="margin-bottom: 1rem;">
+            <strong>Implementation Versions:</strong> Multiple implementations exist across different branches for evaluation purposes. 
+            Rigorous testing will be done before finalizing a single approach for the main release.
           </p>
           <ul>
             <li>
               <a href="https://github.com/monkesearch/monkeSearch/tree/feature/llama-cpp-support">
-                Initial implementation using LangExtract (Legacy – LLM based, ideal for agentic pipelines)
+                LangExtract implementation (Legacy — LLM-based, ideal for agentic pipelines)
               </a>
             </li>
             <li>
               <a href="https://github.com/monkesearch/monkeSearch">
-                Current main branch: LEANN-based (except Windows: Windows uses ChromaDB) semantic search with temporal awareness via regex parsing
+                Current main branch: LEANN-based (Windows: ChromaDB) semantic search with temporal awareness via regex parsing
               </a>
             </li>
             <li>
-              <code>llama.cpp</code> rewrite (legacy-main-llm-implementation) – deprecated but useful for direct LLM integration
+              <code>llama.cpp</code> rewrite (<code>legacy-main-llm-implementation</code>) — deprecated but useful for direct LLM integration
             </li>
             <li>
               <a href="https://github.com/monkesearch/monkeSearch/tree/feature/chunking">
-                <code>llama.cpp</code> feature branch – another variation of the <code>llama.cpp</code> rewrite, with a detailed response model
+                <code>llama.cpp</code> feature branch — variation with a detailed response model
               </a>
             </li>
           </ul>
@@ -161,7 +218,7 @@
       <div class="item">
         <img src="static/images/linux.svg" alt="Linux architecture diagram">
         <h2 class="subtitle has-text-centered">
-          <strong>Linux:</strong> Architecture similar to MacOS. Benchmarks coming soon!
+          <strong>Linux:</strong> Architecture similar to macOS. Benchmarks coming soon!
         </h2>
       </div>
 
@@ -185,19 +242,9 @@
 </style>
 
 
-<style>
-  #results-carousel .item img {
-    width: 70%;
-    height: auto;
-    display: block;
-  }
-</style>
-
-
 <section class="section hero" style="background-color: #f9f9f9;">
   <div class="container is-max-desktop">
     <h2 class="title is-3 has-text-centered">Performance: macOS vs. Windows</h2>
-    
 
     <div class="columns is-centered">
       <div class="column is-three-quarters">
@@ -222,7 +269,6 @@
 <section class="section hero">
   <div class="container is-max-desktop">
     <h2 class="title is-3 has-text-centered">macOS Deep Dive: The Recompute Trade-Off</h2>
-    
 
     <div class="columns is-centered">
       <div class="column is-half">
