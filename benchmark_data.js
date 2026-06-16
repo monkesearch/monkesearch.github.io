@@ -22,6 +22,27 @@ const BENCHMARK_DATA = {
       "date": "2026-06-16"
     },
     {
+      "model": "unsloth/functiongemma-270m-it-GGUF (0.3B)",
+      "total": 80,
+      "overall_pass": 10,
+      "ft_pass": 25,
+      "temp_pass": 40,
+      "sp_pass": 46,
+      "overall_pct": 12.5,
+      "ft_pct": 31.2,
+      "temp_pct": 50.0,
+      "sp_pct": 57.5,
+      "categories": {
+        "filetype": 0.0,
+        "temporal": 0.0,
+        "combined": 0.0,
+        "misc": 66.7
+      },
+      "params": 270000000,
+      "hf_repo": "unsloth/functiongemma-270m-it-GGUF",
+      "date": "2026-06-16"
+    },
+    {
       "model": "HuggingFaceTB/SmolLM2-360M-Instruct-GGUF (0.4B)",
       "total": 80,
       "overall_pass": 12,
@@ -40,6 +61,27 @@ const BENCHMARK_DATA = {
       },
       "params": 360000000,
       "hf_repo": "HuggingFaceTB/SmolLM2-360M-Instruct-GGUF",
+      "date": "2026-06-16"
+    },
+    {
+      "model": "Qwen/Qwen2.5-0.5B-Instruct-GGUF (0.5B)",
+      "total": 80,
+      "overall_pass": 12,
+      "ft_pass": 16,
+      "temp_pass": 50,
+      "sp_pass": 47,
+      "overall_pct": 15.0,
+      "ft_pct": 20.0,
+      "temp_pct": 62.5,
+      "sp_pct": 58.8,
+      "categories": {
+        "filetype": 4.0,
+        "temporal": 53.3,
+        "combined": 4.0,
+        "misc": 66.7
+      },
+      "params": 500000000,
+      "hf_repo": "Qwen/Qwen2.5-0.5B-Instruct-GGUF",
       "date": "2026-06-16"
     },
     {
@@ -103,6 +145,48 @@ const BENCHMARK_DATA = {
       },
       "params": 1000000000,
       "hf_repo": "Andycurrent/Gemma-3-1B-it-GLM-4.7-Flash-Heretic-Uncensored-Thinking_GGUF",
+      "date": "2026-06-16"
+    },
+    {
+      "model": "openbmb/MiniCPM5-1B-GGUF (1.0B)",
+      "total": 80,
+      "overall_pass": 14,
+      "ft_pass": 24,
+      "temp_pass": 50,
+      "sp_pass": 47,
+      "overall_pct": 17.5,
+      "ft_pct": 30.0,
+      "temp_pct": 62.5,
+      "sp_pct": 58.8,
+      "categories": {
+        "filetype": 0.0,
+        "temporal": 40.0,
+        "combined": 0.0,
+        "misc": 66.7
+      },
+      "params": 1000000000,
+      "hf_repo": "openbmb/MiniCPM5-1B-GGUF",
+      "date": "2026-06-16"
+    },
+    {
+      "model": "TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF (1.1B)",
+      "total": 80,
+      "overall_pass": 10,
+      "ft_pass": 25,
+      "temp_pass": 40,
+      "sp_pass": 46,
+      "overall_pct": 12.5,
+      "ft_pct": 31.2,
+      "temp_pct": 50.0,
+      "sp_pct": 57.5,
+      "categories": {
+        "filetype": 0.0,
+        "temporal": 0.0,
+        "combined": 0.0,
+        "misc": 66.7
+      },
+      "params": 1100000000,
+      "hf_repo": "TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF",
       "date": "2026-06-16"
     },
     {
