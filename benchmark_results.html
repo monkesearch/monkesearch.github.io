@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>monkeSearch — Benchmark Results</title>
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    body { font-family: 'Noto Sans', sans-serif; }
+    .title, .subtitle { font-family: 'Google Sans', sans-serif; }
+    .chart-container { position: relative; height: 450px; width: 100%; margin: 2rem 0; }
+    .results-table th { font-family: 'Google Sans', sans-serif; }
+    .best-row { background-color: #f0f7f0 !important; }
+    .hero { background: #fff; }
+    .section-divider { border-top: 1px solid #eee; margin: 2rem 0; }
+    .chartjs-tooltip { transition: opacity 1.5s ease-out; }
+    .dimension-badge { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 3px; font-size: 0.75rem; font-weight: bold; color: #fff; }
+    .badge-ft { background: #4e79a7; }
+    .badge-temp { background: #f28e2b; }
+    .badge-sp { background: #e15759; }
+    .badge-overall { background: #59a14f; }
+  </style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-2">Structured Extraction Benchmark</h1>
+          <h2 class="subtitle is-5">LLM Query Parsing Accuracy by Model Size</h2>
+          <p class="has-text-grey">
+            Tests across <span id="testCount">80</span> queries covering file type, temporal, combined, and noise-resistance categories.<br>
+            Each model runs the identical test suite against a <code>llama-server</code> endpoint.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+
+    <div class="chart-container">
+      <canvas id="scoreChart"></canvas>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <h3 class="title is-4">Model Results</h3>
+    <div class="table-container">
+      <table class="table is-fullwidth is-hoverable is-striped results-table">
+        <thead>
+          <tr>
+            <th>Model</th>
+            <th>Params</th>
+            <th class="has-text-centered"><span class="dimension-badge badge-overall">Overall</span></th>
+            <th class="has-text-centered"><span class="dimension-badge badge-ft">File Type</span></th>
+            <th class="has-text-centered"><span class="dimension-badge badge-temp">Temporal</span></th>
+            <th class="has-text-centered"><span class="dimension-badge badge-sp">Specificity</span></th>
+
+          </tr>
+        </thead>
+        <tbody id="resultsBody">
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container has-text-centered">
+    <p>
+      <a href="https://monkesearch.github.io">monkesearch.github.io</a> &middot;
+      <a href="https://github.com/monkesearch/monkeSearch">GitHub</a>
+    </p>
+  </div>
+</footer>
+
+<script src="benchmark_data.js"></script>
+<script>
+const DIM_COLORS = {
+  overall:  { bg: 'rgba(89, 161, 79, 0.2)', border: '#59a14f', point: '#59a14f', label: 'Overall' },
+  filetype: { bg: 'rgba(78, 121, 167, 0.2)', border: '#4e79a7', point: '#4e79a7', label: 'File Type' },
+  temporal: { bg: 'rgba(242, 142, 43, 0.2)',  border: '#f28e2b', point: '#f28e2b', label: 'Temporal' },
+  spec:     { bg: 'rgba(225, 87, 89, 0.2)',  border: '#e15759', point: '#e15759', label: 'Specificity' },
+};
+
+function render() {
+  const data = typeof BENCHMARK_DATA !== 'undefined' ? BENCHMARK_DATA : null;
+  if (!data || !data.models || data.models.length === 0) {
+    document.body.innerHTML = `
+      <section class="hero"><div class="hero-body"><div class="container has-text-centered">
+        <h1 class="title is-3">No benchmark data yet</h1>
+        <p>Run <code>python benchmark.py --model "org/Model-GGUF" --params N</code> first.</p>
+      </div></div></section>
+    `;
+    return;
+  }
+
+  const models = data.models;
+  document.getElementById('testCount').textContent = models[0].total || '80';
+
+  // ── Chart (scatter, linear X axis = parameters) ──
+  const datasets = [
+    { dim: 'overall_pct', key: 'overall' },
+    { dim: 'ft_pct',      key: 'filetype' },
+    { dim: 'temp_pct',    key: 'temporal' },
+    { dim: 'sp_pct',      key: 'spec' },
+  ].map(({ dim, key }) => ({
+    label: DIM_COLORS[key].label,
+    data: models.map(m => ({ x: m.params, y: m[dim] })),
+    borderColor: 'transparent',
+    backgroundColor: DIM_COLORS[key].bg,
+    pointBackgroundColor: DIM_COLORS[key].point,
+    pointRadius: 6,
+    pointHoverRadius: 8,
+    showLine: key === 'overall',
+    tension: 0.3,
+    fill: false,
+  }));
+
+  new Chart(document.getElementById('scoreChart'), {
+    type: 'scatter',
+    data: { datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'nearest', intersect: false },
+      scales: {
+        x: {
+          type: 'linear',
+          title: { display: true, text: 'Model Parameters', font: { family: 'Google Sans', size: 14 } },
+          ticks: { callback: v => v ? `${(v / 1e9).toFixed(1)}B` : '' },
+        },
+        y: {
+          title: { display: true, text: 'Score (%)', font: { family: 'Google Sans', size: 14 } },
+          min: 0,
+          max: 100,
+        }
+      },
+      plugins: {
+        tooltip: {
+          callbacks: {
+            title: items => {
+              const idx = items[0].dataIndex;
+              return models[idx] ? models[idx].model : '';
+            },
+            label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y}%`,
+          }
+        },
+        legend: { position: 'top' },
+      }
+    }
+  });
+
+  // ── Results table ──
+  const body = document.getElementById('resultsBody');
+  const best = { overall: 0, ft: 0, temp: 0, sp: 0 };
+  models.forEach(m => {
+    if (m.overall_pct > best.overall) best.overall = m.overall_pct;
+    if (m.ft_pct > best.ft) best.ft = m.ft_pct;
+    if (m.temp_pct > best.temp) best.temp = m.temp_pct;
+    if (m.sp_pct > best.sp) best.sp = m.sp_pct;
+  });
+
+  models.slice().reverse().forEach(m => {
+    const tr = document.createElement('tr');
+    if (m.overall_pct >= best.overall) tr.classList.add('best-row');
+    const paramsStr = m.params ? `${(m.params / 1e9).toFixed(1)}B` : '—';
+    tr.innerHTML = `
+      <td><strong>${m.model}</strong></td>
+      <td>${paramsStr}</td>
+      <td class="has-text-centered has-text-weight-bold ${m.overall_pct >= best.overall ? 'has-text-success' : ''}">${m.overall_pct}%</td>
+      <td class="has-text-centered ${m.ft_pct >= best.ft ? 'has-text-weight-bold' : ''}">${m.ft_pct}%</td>
+      <td class="has-text-centered ${m.temp_pct >= best.temp ? 'has-text-weight-bold' : ''}">${m.temp_pct}%</td>
+      <td class="has-text-centered ${m.sp_pct >= best.sp ? 'has-text-weight-bold' : ''}">${m.sp_pct}%</td>
+
+    `;
+    body.appendChild(tr);
+  });
+
+}
+
+document.addEventListener('DOMContentLoaded', render);
+</script>
+
+</body>
+</html>
