@@ -22,6 +22,27 @@
       "date": "2026-06-17"
     },
     {
+      "model": "kishl/smollm2-135m-monkesearch-gguf (0.1B)",
+      "total": 80,
+      "overall_pass": 12,
+      "ft_pass": 24,
+      "temp_pass": 47,
+      "sp_pass": 47,
+      "overall_pct": 15.0,
+      "ft_pct": 30.0,
+      "temp_pct": 58.8,
+      "sp_pct": 58.8,
+      "categories": {
+        "filetype": 16.0,
+        "temporal": 26.7,
+        "combined": 8.0,
+        "misc": 53.3
+      },
+      "params": 135000000,
+      "hf_repo": "kishl/smollm2-135m-monkesearch-gguf",
+      "date": "2026-06-17"
+    },
+    {
       "model": "unsloth/gemma-3-270m-it-GGUF (0.3B)",
       "total": 80,
       "overall_pass": 10,
@@ -292,6 +313,48 @@
       },
       "params": 1000000000,
       "hf_repo": "itlwas/phi-1_5-Q4_K_M-GGUF",
+      "date": "2026-06-17"
+    },
+    {
+      "model": "bartowski/Llama-3.2-1B-Instruct-GGUF (1.0B)",
+      "total": 80,
+      "overall_pass": 10,
+      "ft_pass": 25,
+      "temp_pass": 40,
+      "sp_pass": 46,
+      "overall_pct": 12.5,
+      "ft_pct": 31.2,
+      "temp_pct": 50.0,
+      "sp_pct": 57.5,
+      "categories": {
+        "filetype": 0.0,
+        "temporal": 0.0,
+        "combined": 0.0,
+        "misc": 66.7
+      },
+      "params": 1000000000,
+      "hf_repo": "bartowski/Llama-3.2-1B-Instruct-GGUF",
+      "date": "2026-06-17"
+    },
+    {
+      "model": "unsloth/gemma-3-1b-it-GGUF (1.0B)",
+      "total": 80,
+      "overall_pass": 10,
+      "ft_pass": 25,
+      "temp_pass": 40,
+      "sp_pass": 47,
+      "overall_pct": 12.5,
+      "ft_pct": 31.2,
+      "temp_pct": 50.0,
+      "sp_pct": 58.8,
+      "categories": {
+        "filetype": 0.0,
+        "temporal": 0.0,
+        "combined": 0.0,
+        "misc": 66.7
+      },
+      "params": 1000000000,
+      "hf_repo": "unsloth/gemma-3-1b-it-GGUF",
       "date": "2026-06-17"
     },
     {
