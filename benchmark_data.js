@@ -106,6 +106,27 @@ const BENCHMARK_DATA = {
       "date": "2026-06-17"
     },
     {
+      "model": "Qwen/Qwen2.5-Coder-0.5B-Instruct-GGUF (0.5B)",
+      "total": 80,
+      "overall_pass": 34,
+      "ft_pass": 40,
+      "temp_pass": 66,
+      "sp_pass": 62,
+      "overall_pct": 42.5,
+      "ft_pct": 50.0,
+      "temp_pct": 82.5,
+      "sp_pct": 77.5,
+      "categories": {
+        "filetype": 56.0,
+        "temporal": 66.7,
+        "combined": 32.0,
+        "misc": 46.7
+      },
+      "params": 500000000,
+      "hf_repo": "Qwen/Qwen2.5-Coder-0.5B-Instruct-GGUF",
+      "date": "2026-06-17"
+    },
+    {
       "model": "Qwen/Qwen3-0.6B-GGUF (0.6B)",
       "total": 80,
       "overall_pass": 10,
@@ -271,6 +292,27 @@ const BENCHMARK_DATA = {
       },
       "params": 1500000000,
       "hf_repo": "Qwen/Qwen2-1.5B-Instruct-GGUF",
+      "date": "2026-06-17"
+    },
+    {
+      "model": "Qwen/Qwen2.5-Coder-1.5B-Instruct-GGUF (1.5B)",
+      "total": 80,
+      "overall_pass": 12,
+      "ft_pass": 25,
+      "temp_pass": 45,
+      "sp_pass": 45,
+      "overall_pct": 15.0,
+      "ft_pct": 31.2,
+      "temp_pct": 56.2,
+      "sp_pct": 56.2,
+      "categories": {
+        "filetype": 4.0,
+        "temporal": 20.0,
+        "combined": 0.0,
+        "misc": 60.0
+      },
+      "params": 1500000000,
+      "hf_repo": "Qwen/Qwen2.5-Coder-1.5B-Instruct-GGUF",
       "date": "2026-06-17"
     },
     {
