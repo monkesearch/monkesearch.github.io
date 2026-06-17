@@ -26,6 +26,23 @@
     .sort-link-wrap { display: inline-block; }
     thead th { cursor: pointer; user-select: none; }
     thead th .sort-arrow { margin-left: 3px; font-size: 0.7em; }
+    #bestLineLegend {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: rgba(255,255,255,0.92);
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 6px 10px;
+      font-size: 11px;
+      line-height: 1.6;
+      pointer-events: none;
+      z-index: 5;
+    }
+    #bestLineLegend .legend-row { display: flex; align-items: center; gap: 6px; }
+    #bestLineLegend .legend-line {
+      width: 20px; height: 0; border-top: 2px dashed; flex-shrink: 0;
+    }
   </style>
 </head>
 <body>
@@ -38,8 +55,9 @@
           <h1 class="title is-2">Structured Extraction Benchmark</h1>
           <h2 class="subtitle is-5">LLM Query Parsing Accuracy by Model Size</h2>
           <p class="has-text-grey">
+            Measures how well each model converts natural language file search queries (e.g. &ldquo;python scripts from 3 days ago&rdquo;) into structured JSON &mdash; extracting the correct file type, time range, and specificity.<br>
             Tests across <span id="testCount">80</span> queries covering file type, temporal, combined, and noise-resistance categories.<br>
-            Each model runs the identical test suite against a <code>llama-server</code> endpoint, aimed at testing smol models (<3b) to support potato devices.
+            Each model runs the identical test suite against a <code>llama-server</code> endpoint, aimed at testing smol models (&lt;3B) to support potato devices.
           </p>
         </div>
       </div>
@@ -52,6 +70,7 @@
 
     <div class="chart-container">
       <canvas id="scoreChart"></canvas>
+      <div id="bestLineLegend"></div>
     </div>
 
     <div class="section-divider"></div>
@@ -134,6 +153,39 @@ function render() {
     return `rgba(${r},${g},${b},${a})`;
   }
 
+  // ── Best overall score lines (below 1B / above 1B) ──
+  const below = models.filter(m => m.params < 1_000_000_000);
+  const above = models.filter(m => m.params >= 1_000_000_000);
+  const bestBelow = below.reduce((a, b) => a.overall_pct > b.overall_pct ? a : b);
+  const bestAbove = above.reduce((a, b) => a.overall_pct > b.overall_pct ? a : b);
+  const lineData = [
+    { label: 'Best <1B', val: bestBelow.overall_pct, color: 'rgba(78,121,167,0.6)' },
+    { label: 'Best ≥1B', val: bestAbove.overall_pct, color: 'rgba(89,161,79,0.6)' },
+  ];
+
+  const bestScorePlugin = {
+    id: 'bestScoreLine',
+    afterDraw(chart) {
+      const yS = chart.scales.y, xS = chart.scales.x;
+      if (!yS || !xS) return;
+      const ctx = chart.ctx;
+      ctx.save();
+
+      lineData.forEach(l => {
+        const y = yS.getPixelForValue(l.val);
+        ctx.beginPath();
+        ctx.strokeStyle = l.color;
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([5, 4]);
+        ctx.moveTo(xS.left, y);
+        ctx.lineTo(xS.right, y);
+        ctx.stroke();
+      });
+
+      ctx.restore();
+    }
+  };
+
   // ── Chart (scatter, linear X axis = parameters) ──
   const datasets = [
     { dim: 'overall_pct', key: 'overall' },
@@ -186,8 +238,20 @@ function render() {
         },
         legend: { position: 'top' },
       }
-    }
+    },
+    plugins: [bestScorePlugin]
   });
+
+  // ── Best-score line legend ──
+  const legendEl = document.getElementById('bestLineLegend');
+  if (legendEl) {
+    legendEl.innerHTML = lineData.map(l => `
+      <div class="legend-row">
+        <span class="legend-line" style="border-color:${l.color}"></span>
+        <span>${l.label} (${l.val}%)</span>
+      </div>
+    `).join('');
+  }
 
   // ── Sortable results table ──
   const body = document.getElementById('resultsBody');
