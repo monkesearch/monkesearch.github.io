@@ -1,6 +1,27 @@
 {
   "models": [
     {
+      "model": "bartowski/SmolLM2-135M-Instruct-GGUF (0.1B)",
+      "total": 80,
+      "overall_pass": 10,
+      "ft_pass": 25,
+      "temp_pass": 40,
+      "sp_pass": 47,
+      "overall_pct": 12.5,
+      "ft_pct": 31.2,
+      "temp_pct": 50.0,
+      "sp_pct": 58.8,
+      "categories": {
+        "filetype": 0.0,
+        "temporal": 0.0,
+        "combined": 0.0,
+        "misc": 66.7
+      },
+      "params": 135000000,
+      "hf_repo": "bartowski/SmolLM2-135M-Instruct-GGUF",
+      "date": "2026-06-17"
+    },
+    {
       "model": "unsloth/gemma-3-270m-it-GGUF (0.3B)",
       "total": 80,
       "overall_pass": 10,
@@ -41,6 +62,27 @@
       "params": 270000000,
       "hf_repo": "unsloth/functiongemma-270m-it-GGUF",
       "date": "2026-06-16"
+    },
+    {
+      "model": "LiquidAI/LFM2.5-350M-GGUF (0.3B)",
+      "total": 80,
+      "overall_pass": 13,
+      "ft_pass": 28,
+      "temp_pass": 32,
+      "sp_pass": 49,
+      "overall_pct": 16.2,
+      "ft_pct": 35.0,
+      "temp_pct": 40.0,
+      "sp_pct": 61.3,
+      "categories": {
+        "filetype": 12.0,
+        "temporal": 6.7,
+        "combined": 0.0,
+        "misc": 66.7
+      },
+      "params": 350000000,
+      "hf_repo": "LiquidAI/LFM2.5-350M-GGUF",
+      "date": "2026-06-17"
     },
     {
       "model": "HuggingFaceTB/SmolLM2-360M-Instruct-GGUF (0.4B)",
@@ -124,6 +166,27 @@
       },
       "params": 500000000,
       "hf_repo": "Qwen/Qwen2.5-Coder-0.5B-Instruct-GGUF",
+      "date": "2026-06-17"
+    },
+    {
+      "model": "ruv/ruvltra-claude-code (0.5B)",
+      "total": 80,
+      "overall_pass": 15,
+      "ft_pass": 33,
+      "temp_pass": 38,
+      "sp_pass": 51,
+      "overall_pct": 18.8,
+      "ft_pct": 41.2,
+      "temp_pct": 47.5,
+      "sp_pct": 63.7,
+      "categories": {
+        "filetype": 48.0,
+        "temporal": 46.7,
+        "combined": 20.0,
+        "misc": 26.7
+      },
+      "params": 500000000,
+      "hf_repo": "ruv/ruvltra-claude-code",
       "date": "2026-06-17"
     },
     {
@@ -316,6 +379,27 @@
       "date": "2026-06-17"
     },
     {
+      "model": "lmstudio-community/OpenCoder-1.5B-Instruct-GGUF (1.5B)",
+      "total": 80,
+      "overall_pass": 12,
+      "ft_pass": 25,
+      "temp_pass": 42,
+      "sp_pass": 46,
+      "overall_pct": 15.0,
+      "ft_pct": 31.2,
+      "temp_pct": 52.5,
+      "sp_pct": 57.5,
+      "categories": {
+        "filetype": 8.0,
+        "temporal": 13.3,
+        "combined": 0.0,
+        "misc": 66.7
+      },
+      "params": 1500000000,
+      "hf_repo": "lmstudio-community/OpenCoder-1.5B-Instruct-GGUF",
+      "date": "2026-06-17"
+    },
+    {
       "model": "Qwen/Qwen3-1.7B-GGUF (1.7B)",
       "total": 80,
       "overall_pass": 49,
@@ -334,6 +418,27 @@
       },
       "params": 1700000000,
       "hf_repo": "Qwen/Qwen3-1.7B-GGUF",
+      "date": "2026-06-17"
+    },
+    {
+      "model": "HuggingFaceTB/SmolLM2-1.7B-Instruct-GGUF (1.7B)",
+      "total": 80,
+      "overall_pass": 32,
+      "ft_pass": 36,
+      "temp_pass": 74,
+      "sp_pass": 69,
+      "overall_pct": 40.0,
+      "ft_pct": 45.0,
+      "temp_pct": 92.5,
+      "sp_pct": 86.2,
+      "categories": {
+        "filetype": 52.0,
+        "temporal": 86.7,
+        "combined": 40.0,
+        "misc": 40.0
+      },
+      "params": 1700000000,
+      "hf_repo": "HuggingFaceTB/SmolLM2-1.7B-Instruct-GGUF",
       "date": "2026-06-17"
     },
     {
