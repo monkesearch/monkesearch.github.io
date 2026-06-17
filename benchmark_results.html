@@ -21,6 +21,11 @@
     .badge-temp { background: #f28e2b; }
     .badge-sp { background: #e15759; }
     .badge-overall { background: #59a14f; }
+    .sort-link { color: inherit; text-decoration: none; display: inline-block; }
+    .sort-link:hover { text-decoration: none; }
+    .sort-link-wrap { display: inline-block; }
+    thead th { cursor: pointer; user-select: none; }
+    thead th .sort-arrow { margin-left: 3px; font-size: 0.7em; }
   </style>
 </head>
 <body>
@@ -56,12 +61,12 @@
       <table class="table is-fullwidth is-hoverable is-striped results-table">
         <thead>
           <tr>
-            <th>Model</th>
-            <th>Params</th>
-            <th class="has-text-centered"><span class="dimension-badge badge-overall">Overall</span></th>
-            <th class="has-text-centered"><span class="dimension-badge badge-ft">File Type</span></th>
-            <th class="has-text-centered"><span class="dimension-badge badge-temp">Temporal</span></th>
-            <th class="has-text-centered"><span class="dimension-badge badge-sp">Specificity</span></th>
+            <th data-column="model"><a href="#" class="sort-link">Model</a></th>
+            <th data-column="params"><a href="#" class="sort-link">Params</a></th>
+            <th data-column="overall" class="has-text-centered"><span class="dimension-badge badge-overall sort-link-wrap"><a href="#" class="sort-link">Overall</a></span></th>
+            <th data-column="filetype" class="has-text-centered"><span class="dimension-badge badge-ft sort-link-wrap"><a href="#" class="sort-link">File Type</a></span></th>
+            <th data-column="temporal" class="has-text-centered"><span class="dimension-badge badge-temp sort-link-wrap"><a href="#" class="sort-link">Temporal</a></span></th>
+            <th data-column="specificity" class="has-text-centered"><span class="dimension-badge badge-sp sort-link-wrap"><a href="#" class="sort-link">Specificity</a></span></th>
 
           </tr>
         </thead>
@@ -184,31 +189,83 @@ function render() {
     }
   });
 
-  // ── Results table ──
+  // ── Sortable results table ──
   const body = document.getElementById('resultsBody');
-  const best = { overall: 0, ft: 0, temp: 0, sp: 0 };
-  models.forEach(m => {
-    if (m.overall_pct > best.overall) best.overall = m.overall_pct;
-    if (m.ft_pct > best.ft) best.ft = m.ft_pct;
-    if (m.temp_pct > best.temp) best.temp = m.temp_pct;
-    if (m.sp_pct > best.sp) best.sp = m.sp_pct;
+  let sortCol = 'overall';
+  let sortDir = 'desc';
+
+  function getBest() {
+    const b = { overall: 0, ft: 0, temp: 0, sp: 0 };
+    models.forEach(m => {
+      if (m.overall_pct > b.overall) b.overall = m.overall_pct;
+      if (m.ft_pct > b.ft) b.ft = m.ft_pct;
+      if (m.temp_pct > b.temp) b.temp = m.temp_pct;
+      if (m.sp_pct > b.sp) b.sp = m.sp_pct;
+    });
+    return b;
+  }
+
+  function getVal(m, col) {
+    if (col === 'model') return m.model.toLowerCase();
+    if (col === 'params') return m.params || 0;
+    if (col === 'overall') return m.overall_pct;
+    if (col === 'filetype') return m.ft_pct;
+    if (col === 'temporal') return m.temp_pct;
+    if (col === 'specificity') return m.sp_pct;
+    return '';
+  }
+
+  function renderTable() {
+    const best = getBest();
+    const sorted = [...models].sort((a, b) => {
+      const va = getVal(a, sortCol);
+      const vb = getVal(b, sortCol);
+      if (typeof va === 'string') return sortDir === 'asc' ? va.localeCompare(vb) : vb.localeCompare(va);
+      return sortDir === 'asc' ? va - vb : vb - va;
+    });
+
+    body.innerHTML = '';
+    sorted.forEach(m => {
+      const tr = document.createElement('tr');
+      if (m.overall_pct >= best.overall) tr.classList.add('best-row');
+      const paramsStr = m.params ? `${(m.params / 1e9).toFixed(1)}B` : '—';
+      tr.innerHTML = `
+        <td><strong>${m.model}</strong></td>
+        <td>${paramsStr}</td>
+        <td class="has-text-centered has-text-weight-bold ${m.overall_pct >= best.overall ? 'has-text-success' : ''}">${m.overall_pct}%</td>
+        <td class="has-text-centered ${m.ft_pct >= best.ft ? 'has-text-weight-bold' : ''}">${m.ft_pct}%</td>
+        <td class="has-text-centered ${m.temp_pct >= best.temp ? 'has-text-weight-bold' : ''}">${m.temp_pct}%</td>
+        <td class="has-text-centered ${m.sp_pct >= best.sp ? 'has-text-weight-bold' : ''}">${m.sp_pct}%</td>
+      `;
+      body.appendChild(tr);
+    });
+
+    document.querySelectorAll('thead th .sort-arrow').forEach(el => el.remove());
+    const activeTh = document.querySelector(`thead th[data-column="${sortCol}"]`);
+    if (activeTh) {
+      const arrow = document.createElement('span');
+      arrow.className = 'sort-arrow';
+      arrow.textContent = sortDir === 'asc' ? ' ▲' : ' ▼';
+      const link = activeTh.querySelector('.sort-link');
+      if (link) link.appendChild(arrow);
+    }
+  }
+
+  document.querySelectorAll('thead th[data-column]').forEach(th => {
+    th.addEventListener('click', (e) => {
+      e.preventDefault();
+      const col = th.dataset.column;
+      if (col === sortCol) {
+        sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+      } else {
+        sortCol = col;
+        sortDir = 'desc';
+      }
+      renderTable();
+    });
   });
 
-  models.slice().reverse().forEach(m => {
-    const tr = document.createElement('tr');
-    if (m.overall_pct >= best.overall) tr.classList.add('best-row');
-    const paramsStr = m.params ? `${(m.params / 1e9).toFixed(1)}B` : '—';
-    tr.innerHTML = `
-      <td><strong>${m.model}</strong></td>
-      <td>${paramsStr}</td>
-      <td class="has-text-centered has-text-weight-bold ${m.overall_pct >= best.overall ? 'has-text-success' : ''}">${m.overall_pct}%</td>
-      <td class="has-text-centered ${m.ft_pct >= best.ft ? 'has-text-weight-bold' : ''}">${m.ft_pct}%</td>
-      <td class="has-text-centered ${m.temp_pct >= best.temp ? 'has-text-weight-bold' : ''}">${m.temp_pct}%</td>
-      <td class="has-text-centered ${m.sp_pct >= best.sp ? 'has-text-weight-bold' : ''}">${m.sp_pct}%</td>
-
-    `;
-    body.appendChild(tr);
-  });
+  renderTable();
 
 }
 

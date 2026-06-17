@@ -274,6 +274,27 @@
       "date": "2026-06-16"
     },
     {
+      "model": "itlwas/phi-1_5-Q4_K_M-GGUF (1.0B)",
+      "total": 80,
+      "overall_pass": 10,
+      "ft_pass": 25,
+      "temp_pass": 40,
+      "sp_pass": 46,
+      "overall_pct": 12.5,
+      "ft_pct": 31.2,
+      "temp_pct": 50.0,
+      "sp_pct": 57.5,
+      "categories": {
+        "filetype": 0.0,
+        "temporal": 0.0,
+        "combined": 0.0,
+        "misc": 66.7
+      },
+      "params": 1000000000,
+      "hf_repo": "itlwas/phi-1_5-Q4_K_M-GGUF",
+      "date": "2026-06-17"
+    },
+    {
       "model": "TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF (1.1B)",
       "total": 80,
       "overall_pass": 10,
