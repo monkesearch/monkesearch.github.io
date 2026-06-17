@@ -85,6 +85,27 @@ const BENCHMARK_DATA = {
       "date": "2026-06-16"
     },
     {
+      "model": "Qwen/Qwen1.5-0.5B-Chat-GGUF (0.5B)",
+      "total": 80,
+      "overall_pass": 6,
+      "ft_pass": 26,
+      "temp_pass": 13,
+      "sp_pass": 47,
+      "overall_pct": 7.5,
+      "ft_pct": 32.5,
+      "temp_pct": 16.2,
+      "sp_pct": 58.8,
+      "categories": {
+        "filetype": 4.0,
+        "temporal": 20.0,
+        "combined": 0.0,
+        "misc": 13.3
+      },
+      "params": 500000000,
+      "hf_repo": "Qwen/Qwen1.5-0.5B-Chat-GGUF",
+      "date": "2026-06-17"
+    },
+    {
       "model": "Qwen/Qwen3-0.6B-GGUF (0.6B)",
       "total": 80,
       "overall_pass": 10,
@@ -230,6 +251,69 @@ const BENCHMARK_DATA = {
       "params": 1500000000,
       "hf_repo": "unsloth/DeepSeek-R1-Distill-Qwen-1.5B-GGUF",
       "date": "2026-06-16"
+    },
+    {
+      "model": "Qwen/Qwen2-1.5B-Instruct-GGUF (1.5B)",
+      "total": 80,
+      "overall_pass": 29,
+      "ft_pass": 42,
+      "temp_pass": 73,
+      "sp_pass": 49,
+      "overall_pct": 36.2,
+      "ft_pct": 52.5,
+      "temp_pct": 91.2,
+      "sp_pct": 61.3,
+      "categories": {
+        "filetype": 60.0,
+        "temporal": 86.7,
+        "combined": 12.0,
+        "misc": 53.3
+      },
+      "params": 1500000000,
+      "hf_repo": "Qwen/Qwen2-1.5B-Instruct-GGUF",
+      "date": "2026-06-17"
+    },
+    {
+      "model": "Qwen/Qwen3-1.7B-GGUF (1.7B)",
+      "total": 80,
+      "overall_pass": 49,
+      "ft_pass": 55,
+      "temp_pass": 71,
+      "sp_pass": 73,
+      "overall_pct": 61.3,
+      "ft_pct": 68.8,
+      "temp_pct": 88.8,
+      "sp_pct": 91.2,
+      "categories": {
+        "filetype": 56.0,
+        "temporal": 80.0,
+        "combined": 44.0,
+        "misc": 80.0
+      },
+      "params": 1700000000,
+      "hf_repo": "Qwen/Qwen3-1.7B-GGUF",
+      "date": "2026-06-17"
+    },
+    {
+      "model": "Qwen/Qwen1.5-1.8B-Chat-GGUF (1.8B)",
+      "total": 80,
+      "overall_pass": 10,
+      "ft_pass": 31,
+      "temp_pass": 40,
+      "sp_pass": 42,
+      "overall_pct": 12.5,
+      "ft_pct": 38.8,
+      "temp_pct": 50.0,
+      "sp_pct": 52.5,
+      "categories": {
+        "filetype": 8.0,
+        "temporal": 0.0,
+        "combined": 4.0,
+        "misc": 60.0
+      },
+      "params": 1800000000,
+      "hf_repo": "Qwen/Qwen1.5-1.8B-Chat-GGUF",
+      "date": "2026-06-17"
     }
   ]
 };
