@@ -26,23 +26,7 @@
     .sort-link-wrap { display: inline-block; }
     thead th { cursor: pointer; user-select: none; }
     thead th .sort-arrow { margin-left: 3px; font-size: 0.7em; }
-    #bestLineLegend {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      background: rgba(255,255,255,0.92);
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      padding: 6px 10px;
-      font-size: 11px;
-      line-height: 1.6;
-      pointer-events: none;
-      z-index: 5;
-    }
-    #bestLineLegend .legend-row { display: flex; align-items: center; gap: 6px; }
-    #bestLineLegend .legend-line {
-      width: 20px; height: 0; border-top: 2px dashed; flex-shrink: 0;
-    }
+
   </style>
 </head>
 <body>
@@ -70,7 +54,6 @@
 
     <div class="chart-container">
       <canvas id="scoreChart"></canvas>
-      <div id="bestLineLegend"></div>
     </div>
 
     <div class="section-divider"></div>
@@ -171,6 +154,8 @@ function render() {
       const ctx = chart.ctx;
       ctx.save();
 
+      ctx.font = '11px Google Sans, sans-serif';
+      ctx.textBaseline = 'bottom';
       lineData.forEach(l => {
         const y = yS.getPixelForValue(l.val);
         ctx.beginPath();
@@ -180,6 +165,11 @@ function render() {
         ctx.moveTo(xS.left, y);
         ctx.lineTo(xS.right, y);
         ctx.stroke();
+
+        const text = `${l.label} (${l.val}%)`;
+        ctx.fillStyle = '#333';
+        ctx.textAlign = 'right';
+        ctx.fillText(text, xS.right - 4, y);
       });
 
       ctx.restore();
@@ -241,17 +231,6 @@ function render() {
     },
     plugins: [bestScorePlugin]
   });
-
-  // ── Best-score line legend ──
-  const legendEl = document.getElementById('bestLineLegend');
-  if (legendEl) {
-    legendEl.innerHTML = lineData.map(l => `
-      <div class="legend-row">
-        <span class="legend-line" style="border-color:${l.color}"></span>
-        <span>${l.label} (${l.val}%)</span>
-      </div>
-    `).join('');
-  }
 
   // ── Sortable results table ──
   const body = document.getElementById('resultsBody');
