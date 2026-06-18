@@ -211,6 +211,27 @@ const BENCHMARK_DATA = {
       "date": "2026-06-17"
     },
     {
+      "model": "kishl/qwen-coder-0.5b-monkesearch-gguf (0.5B)",
+      "total": 80,
+      "overall_pass": 77,
+      "ft_pass": 78,
+      "temp_pass": 79,
+      "sp_pass": 80,
+      "overall_pct": 96.2,
+      "ft_pct": 97.5,
+      "temp_pct": 98.8,
+      "sp_pct": 100.0,
+      "categories": {
+        "filetype": 96.0,
+        "temporal": 100.0,
+        "combined": 92.0,
+        "misc": 100.0
+      },
+      "params": 500000000,
+      "hf_repo": "kishl/qwen-coder-0.5b-monkesearch-gguf",
+      "date": "2026-06-18"
+    },
+    {
       "model": "Qwen/Qwen3-0.6B-GGUF (0.6B)",
       "total": 80,
       "overall_pass": 10,

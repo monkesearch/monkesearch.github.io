@@ -1,2 +1,5 @@
 benchmark.py
+*.ipynb
+*.DS_Store
+__pycache__/
 # the script is hacked together, so ill push it once it's good enough for public eyes.
