@@ -274,6 +274,27 @@
       "date": "2026-06-18"
     },
     {
+      "model": "QuantFactory/NuExtract-1.5-tiny-GGUF (0.5B)",
+      "total": 80,
+      "overall_pass": 10,
+      "ft_pass": 25,
+      "temp_pass": 40,
+      "sp_pass": 46,
+      "overall_pct": 12.5,
+      "ft_pct": 31.2,
+      "temp_pct": 50.0,
+      "sp_pct": 57.5,
+      "categories": {
+        "filetype": 0.0,
+        "temporal": 0.0,
+        "combined": 0.0,
+        "misc": 66.7
+      },
+      "params": 500000000,
+      "hf_repo": "QuantFactory/NuExtract-1.5-tiny-GGUF",
+      "date": "2026-06-18"
+    },
+    {
       "model": "tensorblock/bloomz-560m-GGUF (0.6B)",
       "total": 80,
       "overall_pass": 10,
