@@ -152,6 +152,16 @@ function render() {
     { label: 'Best ≥1B', val: bestAbove.overall_pct, color: 'rgba(89,161,79,0.6)' },
   ];
 
+  // ── Best-at-each-param line (straight, highest overall at each x) ──
+  const bestByParam = {};
+  models.forEach(m => {
+    if (!bestByParam[m.params] || m.overall_pct > bestByParam[m.params].overall_pct) {
+      bestByParam[m.params] = m;
+    }
+  });
+  const bestLinePoints = Object.values(bestByParam).sort((a, b) => a.params - b.params);
+  const bestLineData = bestLinePoints.map(m => ({ x: m.params, y: m.overall_pct }));
+
   const bestScorePlugin = {
     id: 'bestScoreLine',
     afterDraw(chart) {
@@ -202,6 +212,25 @@ function render() {
     tension: 0.3,
     fill: false,
   }));
+
+  // ── Best-at-each-param connection line ──
+  if (bestLineData.length >= 2) {
+    datasets.push({
+      label: 'Best at size',
+      data: bestLineData,
+      borderColor: '#222',
+      backgroundColor: 'transparent',
+      pointBackgroundColor: '#222',
+      pointRadius: 0,
+      pointHoverRadius: 0,
+      showLine: true,
+      tension: 0,
+      fill: false,
+      borderWidth: 1,
+      borderDash: [6, 3],
+      order: 0,
+    });
+  }
 
   new Chart(document.getElementById('scoreChart'), {
     type: 'scatter',
