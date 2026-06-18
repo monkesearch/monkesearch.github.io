@@ -24,23 +24,23 @@ const BENCHMARK_DATA = {
     {
       "model": "kishl/smollm2-135m-monkesearch-gguf (0.1B)",
       "total": 80,
-      "overall_pass": 12,
-      "ft_pass": 24,
-      "temp_pass": 47,
-      "sp_pass": 48,
-      "overall_pct": 15.0,
-      "ft_pct": 30.0,
-      "temp_pct": 58.8,
-      "sp_pct": 60.0,
+      "overall_pass": 10,
+      "ft_pass": 27,
+      "temp_pass": 36,
+      "sp_pass": 49,
+      "overall_pct": 12.5,
+      "ft_pct": 33.8,
+      "temp_pct": 45.0,
+      "sp_pct": 61.3,
       "categories": {
-        "filetype": 24.0,
-        "temporal": 26.7,
-        "combined": 4.0,
-        "misc": 40.0
+        "filetype": 8.0,
+        "temporal": 0.0,
+        "combined": 0.0,
+        "misc": 66.7
       },
       "params": 135000000,
       "hf_repo": "kishl/smollm2-135m-monkesearch-gguf",
-      "date": "2026-06-17"
+      "date": "2026-06-18"
     },
     {
       "model": "unsloth/gemma-3-270m-it-GGUF (0.3B)",

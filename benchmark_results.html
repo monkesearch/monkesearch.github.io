@@ -26,6 +26,7 @@
     .sort-link-wrap { display: inline-block; }
     thead th { cursor: pointer; user-select: none; }
     thead th .sort-arrow { margin-left: 3px; font-size: 0.7em; }
+    .ft-tag { display: inline-block; padding: 0.1rem 0.4rem; border-radius: 3px; font-size: 0.65rem; font-weight: 700; background: #6366f1; color: #fff; vertical-align: middle; margin-left: 4px; line-height: 1.4; }
 
   </style>
 </head>
@@ -76,6 +77,11 @@
         </tbody>
       </table>
     </div>
+
+    <p style="margin-top: 0.75rem; font-size: 0.85rem;">
+      <span class="ft-tag" style="font-size: 0.7rem; padding: 0.15rem 0.5rem;">🤗 made for monke</span>
+      <span style="margin-left: 6px; color: #555;">model is fine-tuned for the monkeSearch extraction task</span>
+    </p>
 
   </div>
 </section>
@@ -272,8 +278,12 @@ function render() {
       const tr = document.createElement('tr');
       if (m.overall_pct >= best.overall) tr.classList.add('best-row');
       const paramsStr = m.params ? `${(m.params / 1e9).toFixed(1)}B` : '—';
+      const isFinetuned = m.hf_repo && m.hf_repo.includes('monkesearch');
+      const tag = isFinetuned
+        ? ' <span class="ft-tag">🤗 made for monke</span>'
+        : '';
       tr.innerHTML = `
-        <td><strong>${m.model}</strong></td>
+        <td><strong>${m.model}${tag}</strong></td>
         <td>${paramsStr}</td>
         <td class="has-text-centered has-text-weight-bold ${m.overall_pct >= best.overall ? 'has-text-success' : ''}">${m.overall_pct}%</td>
         <td class="has-text-centered ${m.ft_pct >= best.ft ? 'has-text-weight-bold' : ''}">${m.ft_pct}%</td>
