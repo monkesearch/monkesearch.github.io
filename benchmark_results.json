@@ -43,6 +43,48 @@
       "date": "2026-06-18"
     },
     {
+      "model": "tensorblock/tiny_starcoder_py-GGUF (0.2B)",
+      "total": 80,
+      "overall_pass": 10,
+      "ft_pass": 25,
+      "temp_pass": 40,
+      "sp_pass": 46,
+      "overall_pct": 12.5,
+      "ft_pct": 31.2,
+      "temp_pct": 50.0,
+      "sp_pct": 57.5,
+      "categories": {
+        "filetype": 0.0,
+        "temporal": 0.0,
+        "combined": 0.0,
+        "misc": 66.7
+      },
+      "params": 164000000,
+      "hf_repo": "tensorblock/tiny_starcoder_py-GGUF",
+      "date": "2026-06-18"
+    },
+    {
+      "model": "tensorblock/smalllocal-GGUF (0.2B)",
+      "total": 80,
+      "overall_pass": 10,
+      "ft_pass": 25,
+      "temp_pass": 40,
+      "sp_pass": 46,
+      "overall_pct": 12.5,
+      "ft_pct": 31.2,
+      "temp_pct": 50.0,
+      "sp_pct": 57.5,
+      "categories": {
+        "filetype": 0.0,
+        "temporal": 0.0,
+        "combined": 0.0,
+        "misc": 66.7
+      },
+      "params": 200000000,
+      "hf_repo": "tensorblock/smalllocal-GGUF",
+      "date": "2026-06-18"
+    },
+    {
       "model": "unsloth/gemma-3-270m-it-GGUF (0.3B)",
       "total": 80,
       "overall_pass": 10,
@@ -232,6 +274,27 @@
       "date": "2026-06-18"
     },
     {
+      "model": "tensorblock/bloomz-560m-GGUF (0.6B)",
+      "total": 80,
+      "overall_pass": 10,
+      "ft_pass": 25,
+      "temp_pass": 40,
+      "sp_pass": 46,
+      "overall_pct": 12.5,
+      "ft_pct": 31.2,
+      "temp_pct": 50.0,
+      "sp_pct": 57.5,
+      "categories": {
+        "filetype": 0.0,
+        "temporal": 0.0,
+        "combined": 0.0,
+        "misc": 66.7
+      },
+      "params": 560000000,
+      "hf_repo": "tensorblock/bloomz-560m-GGUF",
+      "date": "2026-06-18"
+    },
+    {
       "model": "Qwen/Qwen3-0.6B-GGUF (0.6B)",
       "total": 80,
       "overall_pass": 10,
@@ -377,6 +440,27 @@
       "params": 1000000000,
       "hf_repo": "unsloth/gemma-3-1b-it-GGUF",
       "date": "2026-06-17"
+    },
+    {
+      "model": "tanujrai/StarCoderBase-1B-GGUF (1.0B)",
+      "total": 80,
+      "overall_pass": 10,
+      "ft_pass": 25,
+      "temp_pass": 40,
+      "sp_pass": 46,
+      "overall_pct": 12.5,
+      "ft_pct": 31.2,
+      "temp_pct": 50.0,
+      "sp_pct": 57.5,
+      "categories": {
+        "filetype": 0.0,
+        "temporal": 0.0,
+        "combined": 0.0,
+        "misc": 66.7
+      },
+      "params": 1000000000,
+      "hf_repo": "tanujrai/StarCoderBase-1B-GGUF",
+      "date": "2026-06-18"
     },
     {
       "model": "TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF (1.1B)",
