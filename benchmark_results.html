@@ -245,11 +245,12 @@ function render() {
           title: { display: true, text: 'Model Parameters', font: { family: 'Google Sans', size: 14 } },
           ticks: { callback: v => v ? `${(v / 1e9).toFixed(1)}B` : '' },
         },
-        y: {
-          title: { display: true, text: 'Score (%)', font: { family: 'Google Sans', size: 14 } },
-          min: 0,
-          max: 100,
-        }
+          y: {
+            title: { display: true, text: 'Score (%)', font: { family: 'Google Sans', size: 14 } },
+            min: 0,
+            max: 105,
+            ticks: { stepSize: 10, callback: v => v > 100 ? '' : v + '%' },
+          }
       },
       plugins: {
         tooltip: {
