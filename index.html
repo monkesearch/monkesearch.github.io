@@ -108,37 +108,38 @@
             <strong>file type</strong> (what kind of file — pdf, image, code, etc.),
             <strong>temporal context</strong> (when — 3 days ago, last week, etc.), and
             <strong>misc keywords</strong> (remaining context — project name, topic, etc.).
-            The first implementation used a local LLM to extract these constituents and convert them directly into macOS Spotlight 
-            query arguments. The current <code>main</code> branch achieves the same task using vector databases instead, making monkeSearch 
+            The <code>main/dev</code> branch uses a local LLM to extract these constituents and convert them directly into macOS Spotlight 
+            query arguments. The <code>vectordb</code> branch achieves the same task using vector databases instead, making monkeSearch 
             cross-platform. Both approaches are fully offline.
           </p>
 
-          <h4 class="title is-5" style="margin-top: 2rem; margin-bottom: 1rem;">The First Implementation: LLM → Spotlight</h4>
+          <h4 class="title is-5" style="margin-top: 2rem; margin-bottom: 1rem;">LLM → Spotlight (main/dev branch)</h4>
           <p style="margin-bottom: 1.25rem;">
-            The original vision behind the project: use a local LLM to convert a natural language query directly into arguments 
-            for macOS's built-in Spotlight search — no vector database, no embeddings index, no metadata dump. Just natural 
-            language in, structured OS-level query out, instant results back.
+            The idea is simple: use a local LLM to convert a natural language query directly into arguments for macOS's built-in 
+            Spotlight search — no vector database, no embeddings index, no metadata dump. Just natural language in, 
+            structured OS-level query out, instant results back.
           </p>
           <p style="margin-bottom: 1.25rem;">
             A user writes a query like <code>"python scripts from 3 days ago"</code>. Stop words are stripped, then a local LLM 
-            (Qwen3-0.6B running via llama.cpp) parses the cleaned query and extracts structured components using constrained JSON output:
+            (like LFM 1.2B or our fine-tuned SmolLM2 135M, running via llama.cpp) parses the cleaned query and extracts structured 
+            components using constrained JSON output:
           </p>
           <pre style="margin-top: 1rem; margin-bottom: 1.5rem;"><code>{
-  "file_types": ["py"],
+  "file_type_indicators": [{"text": "python", "extensions": ["py"], "is_specific": true}],
   "time_unit": "days",
   "time_unit_value": "3",
-  "is_specific": true,
   "source_text": {
     "file_types": "python scripts",
-    "time_unit": "3 days ago"
+    "time_unit": "3 days ago",
+    "time_unit_value": "3"
   }
 }</code></pre>
           <p style="margin-bottom: 1.25rem;">
             The LLM understands that "python scripts" → <code>.py</code>, "images" → <code>jpg,png</code>, 
             "yesterday" → <code>days,1</code>, "last week" → <code>weeks,1</code>, etc. These extracted components are then 
             converted into <code>NSMetadataQuery</code> predicates — the same API that powers Spotlight and <code>mdfind</code>. 
-            File types are mapped to UTIs via <code>utitools</code> and used as <code>kMDItemContentTypeTree</code> predicates; 
-            temporal data becomes <code>kMDItemFSContentChangeDate</code> date predicates; remaining keywords match against 
+            File types are mapped to UTIs via <code>utitools</code> and used as <code>kMDItemContentTypeTree</code> predicates. 
+            Temporal data becomes <code>kMDItemFSContentChangeDate</code> date predicates; remaining keywords match against 
             <code>kMDItemTextContent</code> and <code>kMDItemFSName</code>. All predicates are combined with 
             <code>NSCompoundPredicate</code> and the compound query runs against Spotlight's existing index — results come 
             back instantly since macOS already maintains the index. There's no index to build, no embeddings to generate. 
@@ -146,67 +147,46 @@
             through Spotlight's own access controls).
           </p>
           <p style="margin-bottom: 1.25rem;">
-            Two LLM-based branches exist: the 
-            <a href="https://github.com/monkesearch/monkeSearch/tree/langextract-llama-server">LangExtract implementation</a> 
-            using <a href="https://github.com/langextract/langextract">LangExtract</a> with a local Llama server for structured extraction, 
-            and the <strong>llama.cpp direct implementation</strong> (<code>legacy-main-llm-implementation</code> branch) using 
-            <code>llama_cpp.Llama</code> directly with constrained JSON output via Pydantic schema. Both use the same 
-            <code>parser.py</code> to convert structured output into <code>NSMetadataQuery</code> predicates.
+            Apple ships a built-in UTI (Uniform Type Identifier) hierarchy on every Mac — <code>public.image</code> covers 
+            <code>jpeg</code>, <code>png</code>, <code>gif</code>, <code>heic</code> and more under one umbrella, 
+            <code>public.source-code</code> groups <code>py</code>, <code>js</code>, <code>cpp</code>, etc. 
+            The code crawls this hierarchy and intelligently decides whether to produce broad results (search the whole 
+            <code>public.image</code> tree for <code>"images"</code>) or filetype-specific results (search just 
+            <code>.py</code> for <code>"python scripts"</code>), depending on how specific the LLM's extracted 
+            file type indicators are.
           </p>
-
-          <h4 class="title is-5" style="margin-top: 2.5rem; margin-bottom: 1rem;">Current Implementation: Vector DB</h4>
-          <p style="margin-bottom: 1.25rem;">
-            The current <code>main</code> branch achieves the same functionality using vector databases instead of a live LLM 
-            at query time. This was built to make monkeSearch cross-platform (the LLM → Spotlight approach is macOS-only) and 
-            to make search faster since it doesn't need an LLM running. The tradeoff: you need to build and maintain an index, 
-            but search is sub-second. Platform-specific metadata extraction feeds into embedding generation 
-            (default: <code>facebook/contriever</code>), with Mac/Linux using LEANN (graph-based vector index with 97% storage savings) 
-            and Windows using ChromaDB. Temporal expressions are parsed via regex into ISO timestamp ranges and applied as filters 
-            on the semantic search results.
-          </p>
-
           <p style="margin-top: 2rem; margin-bottom: 1.25rem;">
-            <strong>For Agentic Use:</strong> The LLM-based implementations are particularly suitable for integration into 
-            larger AI pipelines and agentic systems. They provide a direct LLM-to-filesystem bridge through natural language 
+            <strong>For Agentic Use:</strong> The LLM-based implementation is particularly suitable for integration into 
+            larger AI pipelines and agentic systems. It provides a direct LLM-to-filesystem bridge through natural language 
             without modifying any files, leveraging OS-level scoped safety through Spotlight. If you're building autonomous 
-            agents or LLM orchestration systems that need file discovery capabilities, these branches give you that without 
+            agents or LLM orchestration systems that need file discovery capabilities, this branch gives you that without 
             the overhead of maintaining a separate index.
           </p>
-          <p style="margin-bottom: 1rem;">
-            <strong>Implementation Versions:</strong> Multiple implementations exist across different branches for evaluation purposes. 
-            Rigorous testing will be done before finalizing a single approach for the main release.
+
+          <div style="margin: 2.5rem 0; padding: 1.25rem; background: #f5f5f5; border-radius: 8px; text-align: center;">
+            <p style="margin: 0; font-size: 1.1rem;">
+              <a href="benchmark_results.html" style="font-weight: 600;">Benchmarks →</a>
+            </p>
+            <p style="margin: 0.5rem 0 0 0; font-size: 0.9rem; color: #555;">
+              Many small models benchmarked on structured JSON extraction — file types, temporal parsing, and noise resistance across 80 test cases.
+            </p>
+          </div>
+
+          <h4 class="title is-5" style="margin-top: 2.5rem; margin-bottom: 1rem;">Vector DB (vectordb branch)</h4>
+          <p style="margin-bottom: 1.25rem;">
+            The <code>vectordb</code> branch achieves the same functionality using vector databases instead of a live LLM 
+            at query time. This was built to make monkeSearch cross-platform.
           </p>
-          <ul>
-            <li>
-              <a href="https://github.com/monkesearch/monkeSearch/tree/feature/llama-cpp-support">
-                LangExtract implementation (Legacy — LLM-based, ideal for agentic pipelines)
-              </a>
-            </li>
-            <li>
-              <a href="https://github.com/monkesearch/monkeSearch">
-                Current main branch: LEANN-based (Windows: ChromaDB) semantic search with temporal awareness via regex parsing
-              </a>
-            </li>
-            <li>
-              <code>llama.cpp</code> rewrite (<code>legacy-main-llm-implementation</code>) — deprecated but useful for direct LLM integration
-            </li>
-            <li>
-              <a href="https://github.com/monkesearch/monkeSearch/tree/feature/chunking">
-                <code>llama.cpp</code> feature branch — variation with a detailed response model
-              </a>
-            </li>
-          </ul>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-
-
-<section class="section hero" style="padding-top: 3rem; padding-bottom: 3rem;">
+<section class="section hero" id="vectordb" style="padding-top: 3rem; padding-bottom: 1rem;">
   <div class="container is-fluid">
-    <h2 class="title is-3 has-text-centered">Cross-Platform Architecture</h2>
+    <h2 class="title is-3 has-text-centered">Vector DB Architecture</h2>
+    <p class="has-text-centered" style="margin-bottom: 1.5rem;">Platform-specific architecture diagrams for the <code>vectordb</code> branch.</p>
     <div id="results-carousel" class="carousel results-carousel">
       
       <div class="item">
@@ -253,6 +233,7 @@
 <section class="section hero" style="background-color: #f9f9f9;">
   <div class="container is-max-desktop">
     <h2 class="title is-3 has-text-centered">Performance: macOS vs. Windows</h2>
+    <p class="has-text-centered" style="margin-bottom: 1.5rem;">Benchmark results from the <code>vectordb</code> branch.</p>
 
     <div class="columns is-centered">
       <div class="column is-three-quarters">
@@ -276,7 +257,8 @@
 
 <section class="section hero">
   <div class="container is-max-desktop">
-    <h2 class="title is-3 has-text-centered">macOS Deep Dive: The Recompute Trade-Off</h2>
+    <h2 class="title is-3 has-text-centered">macOS Deep Dive</h2>
+    <p class="has-text-centered" style="margin-bottom: 1.5rem;">Results from the <code>vectordb</code> branch.</p>
 
     <div class="columns is-centered">
       <div class="column is-half">
@@ -296,9 +278,9 @@
       </div>
     </div>
 
-     <div class="content has-text-justified">
-      <p class="has-text-centered is-size-5" style="margin-top: 1rem;">
-        The "Recompute" feature on macOS offers a clear trade-off: enable it to save a massive amount of disk space at the cost of much slower search performance. Disable it for instant results, but with a larger storage footprint.
+    <div class="content" style="text-align: center;">
+      <p style="font-size: 0.85rem; color: #666;">
+        macOS LEANN recompute is enabled by default. Disable it for faster search at the cost of disk space.
       </p>
     </div>
   </div>
