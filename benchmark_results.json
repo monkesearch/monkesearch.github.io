@@ -148,6 +148,27 @@
       "date": "2026-06-17"
     },
     {
+      "model": "ibm-granite/granite-4.0-h-350m-GGUF (0.3B)",
+      "total": 80,
+      "overall_pass": 7,
+      "ft_pass": 31,
+      "temp_pass": 21,
+      "sp_pass": 50,
+      "overall_pct": 8.8,
+      "ft_pct": 38.8,
+      "temp_pct": 26.2,
+      "sp_pct": 62.5,
+      "categories": {
+        "filetype": 12.0,
+        "temporal": 20.0,
+        "combined": 12.0,
+        "misc": 13.3
+      },
+      "params": 350000000,
+      "hf_repo": "ibm-granite/granite-4.0-h-350m-GGUF",
+      "date": "2026-06-19"
+    },
+    {
       "model": "HuggingFaceTB/SmolLM2-360M-Instruct-GGUF (0.4B)",
       "total": 80,
       "overall_pass": 11,
@@ -484,6 +505,27 @@
       "date": "2026-06-18"
     },
     {
+      "model": "ibm-granite/granite-4.0-h-1b-GGUF (1.0B)",
+      "total": 80,
+      "overall_pass": 35,
+      "ft_pass": 58,
+      "temp_pass": 74,
+      "sp_pass": 53,
+      "overall_pct": 43.8,
+      "ft_pct": 72.5,
+      "temp_pct": 92.5,
+      "sp_pct": 66.2,
+      "categories": {
+        "filetype": 64.0,
+        "temporal": 86.7,
+        "combined": 20.0,
+        "misc": 80.0
+      },
+      "params": 1000000000,
+      "hf_repo": "ibm-granite/granite-4.0-h-1b-GGUF",
+      "date": "2026-06-19"
+    },
+    {
       "model": "TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF (1.1B)",
       "total": 80,
       "overall_pass": 10,
@@ -671,6 +713,27 @@
       "params": 1800000000,
       "hf_repo": "Qwen/Qwen1.5-1.8B-Chat-GGUF",
       "date": "2026-06-17"
+    },
+    {
+      "model": "mradermacher/Qwen3-MOE-4x0.6B-2.4B-Writing-Thunder-V1.2-GGUF (2.4B)",
+      "total": 80,
+      "overall_pass": 10,
+      "ft_pass": 25,
+      "temp_pass": 40,
+      "sp_pass": 46,
+      "overall_pct": 12.5,
+      "ft_pct": 31.2,
+      "temp_pct": 50.0,
+      "sp_pct": 57.5,
+      "categories": {
+        "filetype": 0.0,
+        "temporal": 0.0,
+        "combined": 0.0,
+        "misc": 66.7
+      },
+      "params": 2400000000,
+      "hf_repo": "mradermacher/Qwen3-MOE-4x0.6B-2.4B-Writing-Thunder-V1.2-GGUF",
+      "date": "2026-06-19"
     }
   ]
 }
