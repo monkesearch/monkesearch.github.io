@@ -41,7 +41,7 @@
           <h2 class="subtitle is-5">LLM Query Parsing Accuracy by Model Size</h2>
           <p class="has-text-grey">
             Measures how well each model converts natural language file search queries (e.g. &ldquo;python scripts from 3 days ago&rdquo;) into structured JSON &mdash; extracting the correct file type, time range, and specificity.<br>
-            Tests across <span id="testCount">80</span> queries covering file type, temporal, combined, and noise-resistance categories.<br>
+            Tests across <span id="testCount">80</span> queries covering file type, temporal awareness, combined, and noise-resistance categories.<br>
             Each model runs the identical test suite against a <code>llama-server</code> endpoint, aimed at testing smol models (&lt;3B) to support potato devices.
           </p>
         </div>
@@ -68,7 +68,7 @@
             <th data-column="params"><a href="#" class="sort-link">Params</a></th>
             <th data-column="overall" class="has-text-centered"><span class="dimension-badge badge-overall sort-link-wrap"><a href="#" class="sort-link">Overall</a></span></th>
             <th data-column="filetype" class="has-text-centered"><span class="dimension-badge badge-ft sort-link-wrap"><a href="#" class="sort-link">File Type</a></span></th>
-            <th data-column="temporal" class="has-text-centered"><span class="dimension-badge badge-temp sort-link-wrap"><a href="#" class="sort-link">Temporal</a></span></th>
+            <th data-column="temporal" class="has-text-centered"><span class="dimension-badge badge-temp sort-link-wrap"><a href="#" class="sort-link">Temporal Awareness</a></span></th>
             <th data-column="specificity" class="has-text-centered"><span class="dimension-badge badge-sp sort-link-wrap"><a href="#" class="sort-link">Specificity</a></span></th>
 
           </tr>
@@ -93,8 +93,9 @@
         <strong class="has-text-dark">Overall</strong> averages all categories into a single score.
         <strong class="has-text-dark">File Type</strong> tests whether the model correctly maps descriptions
         (e.g., &ldquo;python scripts&rdquo;) to the right extension (<code>.py</code>).
-        <strong class="has-text-dark">Temporal</strong> evaluates parsing of time expressions
-        (&ldquo;3 days ago&rdquo;, &ldquo;last week&rdquo;) into structured date ranges.
+        <strong class="has-text-dark">Temporal Awareness</strong> evaluates parsing of time expressions
+        (&ldquo;3 days ago&rdquo;, &ldquo;last week&rdquo;) into structured date ranges &mdash;
+        combining value (range magnitude) and direction (before/after) scores.
         <strong class="has-text-dark">Specificity</strong> measures the model&rsquo;s ability to determine
         whether a query refers to a specific file or a broad category.
       </p>
@@ -111,17 +112,36 @@
   </div>
 </footer>
 
-<script src="benchmark_data.js"></script>
 <script>
+async function loadData() {
+  try {
+    const resp = await fetch('benchmark_results.json');
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const data = await resp.json();
+    render(data);
+  } catch (e) {
+    document.body.innerHTML = `
+      <section class="hero"><div class="hero-body"><div class="container has-text-centered">
+        <h1 class="title is-3">No benchmark data yet</h1>
+        <p>Run <code>python benchmark.py --model "org/Model-GGUF" --params N</code> first.</p>
+        <p class="has-text-grey" style="font-size:0.85rem">(${e.message})</p>
+      </div></div></section>
+    `;
+  }
+}
+
 const DIM_COLORS = {
   overall:  { bg: 'rgba(89, 161, 79, 0.2)', border: '#59a14f', point: '#59a14f', label: 'Overall' },
   filetype: { bg: 'rgba(78, 121, 167, 0.2)', border: '#4e79a7', point: '#4e79a7', label: 'File Type' },
-  temporal: { bg: 'rgba(242, 142, 43, 0.2)',  border: '#f28e2b', point: '#f28e2b', label: 'Temporal' },
+  temporal: { bg: 'rgba(242, 142, 43, 0.2)',  border: '#f28e2b', point: '#f28e2b', label: 'Temporal Awareness' },
   spec:     { bg: 'rgba(225, 87, 89, 0.2)',  border: '#e15759', point: '#e15759', label: 'Specificity' },
 };
 
-function render() {
-  const data = typeof BENCHMARK_DATA !== 'undefined' ? BENCHMARK_DATA : null;
+function ta(m) {
+  return ((m.temp_pct || 0) + (m.td_pct || 0)) / 2;
+}
+
+function render(data) {
   if (!data || !data.models || data.models.length === 0) {
     document.body.innerHTML = `
       <section class="hero"><div class="hero-body"><div class="container has-text-centered">
@@ -196,11 +216,11 @@ function render() {
   const datasets = [
     { dim: 'overall_pct', key: 'overall' },
     { dim: 'ft_pct',      key: 'filetype' },
-    { dim: 'temp_pct',    key: 'temporal' },
+    { dim: null,          key: 'temporal', fn: ta },
     { dim: 'sp_pct',      key: 'spec' },
-  ].map(({ dim, key }) => ({
+  ].map(({ dim, key, fn }) => ({
     label: DIM_COLORS[key].label,
-    data: models.map(m => ({ x: m.params, y: m[dim] })),
+    data: models.map(m => ({ x: m.params, y: fn ? fn(m) : m[dim] })),
     borderColor: 'transparent',
     backgroundColor: DIM_COLORS[key].bg,
     pointBackgroundColor: hexToRgba(DIM_COLORS[key].point, 0.85),
@@ -270,7 +290,7 @@ function render() {
 
   // ── Sortable results table ──
   const body = document.getElementById('resultsBody');
-  let sortCol = 'overall';
+  let sortCol = 'temporal';
   let sortDir = 'desc';
 
   function getBest() {
@@ -278,7 +298,7 @@ function render() {
     models.forEach(m => {
       if (m.overall_pct > b.overall) b.overall = m.overall_pct;
       if (m.ft_pct > b.ft) b.ft = m.ft_pct;
-      if (m.temp_pct > b.temp) b.temp = m.temp_pct;
+      if (ta(m) > b.temp) b.temp = ta(m);
       if (m.sp_pct > b.sp) b.sp = m.sp_pct;
     });
     return b;
@@ -289,7 +309,7 @@ function render() {
     if (col === 'params') return m.params || 0;
     if (col === 'overall') return m.overall_pct;
     if (col === 'filetype') return m.ft_pct;
-    if (col === 'temporal') return m.temp_pct;
+    if (col === 'temporal') return ta(m);
     if (col === 'specificity') return m.sp_pct;
     return '';
   }
@@ -312,12 +332,13 @@ function render() {
       const tag = isFinetuned
         ? ' <span class="ft-tag">🤗 made for monke</span>'
         : '';
+      const tBest = best.temp;
       tr.innerHTML = `
         <td><strong>${m.model}${tag}</strong></td>
         <td>${paramsStr}</td>
         <td class="has-text-centered has-text-weight-bold ${m.overall_pct >= best.overall ? 'has-text-success' : ''}">${m.overall_pct}%</td>
         <td class="has-text-centered ${m.ft_pct >= best.ft ? 'has-text-weight-bold' : ''}">${m.ft_pct}%</td>
-        <td class="has-text-centered ${m.temp_pct >= best.temp ? 'has-text-weight-bold' : ''}">${m.temp_pct}%</td>
+        <td class="has-text-centered ${ta(m) >= tBest ? 'has-text-weight-bold' : ''}">${ta(m).toFixed(1)}%</td>
         <td class="has-text-centered ${m.sp_pct >= best.sp ? 'has-text-weight-bold' : ''}">${m.sp_pct}%</td>
       `;
       body.appendChild(tr);
@@ -352,7 +373,7 @@ function render() {
 
 }
 
-document.addEventListener('DOMContentLoaded', render);
+document.addEventListener('DOMContentLoaded', loadData);
 </script>
 
 </body>

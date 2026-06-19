@@ -1,5 +1,6 @@
 benchmark.py
 *.ipynb
+test_cases.yaml
 *.DS_Store
 __pycache__/
 # the script is hacked together, so ill push it once it's good enough for public eyes.
