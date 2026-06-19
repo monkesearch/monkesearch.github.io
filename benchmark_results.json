@@ -277,29 +277,6 @@
       }
     },
     {
-      "model": "kishl/qwen-coder-0.5b-monkesearch-gguf (0.5B)",
-      "total": 90,
-      "date": "2026-06-19",
-      "hf_repo": "kishl/qwen-coder-0.5b-monkesearch-gguf",
-      "params": 500000000,
-      "overall_pass": 61,
-      "ft_pass": 87,
-      "temp_pass": 87,
-      "td_pass": 64,
-      "sp_pass": 90,
-      "overall_pct": 67.8,
-      "ft_pct": 96.7,
-      "temp_pct": 96.7,
-      "td_pct": 71.1,
-      "sp_pct": 100.0,
-      "categories": {
-        "filetype": 96.0,
-        "temporal": 50.0,
-        "combined": 40.0,
-        "misc": 100.0
-      }
-    },
-    {
       "model": "QuantFactory/NuExtract-1.5-tiny-GGUF (0.5B)",
       "total": 90,
       "date": "2026-06-19",
