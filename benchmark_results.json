@@ -300,6 +300,27 @@
       }
     },
     {
+      "model": "kishl/qwen-coder-0.5b-monkesearch-gguf (0.5B)",
+      "total": 90,
+      "overall_pass": 19,
+      "ft_pass": 33,
+      "temp_pass": 52,
+      "sp_pass": 64,
+      "overall_pct": 21.1,
+      "ft_pct": 36.7,
+      "temp_pct": 57.8,
+      "sp_pct": 71.1,
+      "categories": {
+        "filetype": 48.0,
+        "temporal": 25.0,
+        "combined": 10.0,
+        "misc": 26.7
+      },
+      "params": 500000000,
+      "hf_repo": "kishl/qwen-coder-0.5b-monkesearch-gguf",
+      "date": "2026-06-20"
+    },
+    {
       "model": "tensorblock/bloomz-560m-GGUF (0.6B)",
       "total": 90,
       "date": "2026-06-19",
